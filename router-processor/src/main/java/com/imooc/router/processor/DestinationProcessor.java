@@ -5,7 +5,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.imooc.router.annotations.Destination;
 
-import java.io.File;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.Set;

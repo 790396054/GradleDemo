@@ -18,7 +18,6 @@ dependencies {
 apply plugin: 'maven'
 
 // 配置maven插件中的uploadArchives任务
-// buildSrc 目录不能发布，需拷贝到一个新的目录中发布
 uploadArchives {
     repositories {
         mavenDeployer {

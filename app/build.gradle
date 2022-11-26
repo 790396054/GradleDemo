@@ -21,6 +21,8 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        resConfigs "zh-rCN"
     }
 
     buildTypes {
@@ -33,6 +35,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    // 由 plugin 插件自动实现参数的注入。
+//    kapt {
+//        arguments {
+//            arg("root_project_dir", rootProject.projectDir.absolutePath)
+//        }
+//    }
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -51,9 +59,17 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.3'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
 
-//    implementation project(':router-annotations')
-//    kapt project(':router-processor')
-    implementation 'com.imooc.router:router-annotations:1.0.0'
-    kapt 'com.imooc.router:router-processor:1.0.0'
+    implementation project(':router-annotations')
+    kapt project(':router-processor')
+//    implementation 'com.imooc.router:router-annotations:1.0.0'
+//    kapt 'com.imooc.router:router-processor:1.0.0'
 
 }
+
+Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+def u = properties.getProperty("USER_NAME")
+def p = properties.getProperty("PWD")
+println("test username = $u")
+println("test password = $p")

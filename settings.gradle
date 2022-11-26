@@ -1,2 +1,10 @@
 include ':app', ':router-gradle-plugin', ':router-annotations', ':router-processor'
 rootProject.name = "GradleDemo"
+
+// 打印本次构建执行的所有任务的名称
+gradle.taskGraph.beforeTask { task ->
+    println("[all-task] - ${task.name}")
+    println("[all-task - tostring] - ${task.toString()}")
+    println("[all-task - tostring] - ${task.description}")
+    // 写到一个文件中，如何实现？
+}

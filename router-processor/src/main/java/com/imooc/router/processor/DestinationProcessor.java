@@ -5,6 +5,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.imooc.router.annotations.Destination;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.Writer;
 import java.util.Collections;
 import java.util.Set;
@@ -34,6 +37,10 @@ public class DestinationProcessor extends AbstractProcessor {
 
         System.out.println(TAG + " >>> process start ...");
         String rootDir = processingEnv.getOptions().get("root_project_dir");
+        System.out.println("rootDirrrrrrrrr" + rootDir);
+        if (rootDir == null || "".equals(rootDir)) {
+            throw new RuntimeException("请配置 root_project_dir");
+        }
         // 获取所有标记了 @Destination 注解的 类的信息
         Set<Element> allDestinationElements = (Set<Element>) roundEnvironment.getElementsAnnotatedWith(Destination.class);
 
@@ -109,29 +116,29 @@ public class DestinationProcessor extends AbstractProcessor {
 
         // 写入JSON到本地文件中
         // 检测父目录是否存在
-//        File rootDirFile = new File(rootDir);
-//        if (!rootDirFile.exists()) {
-//            throw new RuntimeException("root_project_dir not exist!");
-//        }
+        File rootDirFile = new File(rootDir);
+        if (!rootDirFile.exists()) {
+            throw new RuntimeException("root_project_dir not exist!");
+        }
 
         // 创建 router_mapping 子目录
-//        File routerFileDir = new File(rootDirFile, "router_mapping");
-//        if (!routerFileDir.exists()) {
-//            routerFileDir.mkdir();
-//        }
+        File routerFileDir = new File(rootDirFile, "router_mapping");
+        if (!routerFileDir.exists()) {
+            routerFileDir.mkdir();
+        }
 
-//        File mappingFile = new File(routerFileDir, "mapping_" + System.currentTimeMillis() + ".json");
+        File mappingFile = new File(routerFileDir, "mapping_" + System.currentTimeMillis() + ".json");
 
-//        // 写入json内容
-//        try {
-//            BufferedWriter out = new BufferedWriter(new FileWriter(mappingFile));
-//            String jsonStr = destinationJsonArray.toString();
-//            out.write(jsonStr);
-//            out.flush();
-//            out.close();
-//        } catch (Throwable throwable) {
-//            throw new RuntimeException("Error while writing json", throwable);
-//        }
+        // 写入json内容
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter(mappingFile));
+            String jsonStr = destinationJsonArray.toString();
+            out.write(jsonStr);
+            out.flush();
+            out.close();
+        } catch (Throwable throwable) {
+            throw new RuntimeException("Error while writing json", throwable);
+        }
 
         System.out.println(TAG + " >>> process finish.");
 

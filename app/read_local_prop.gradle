@@ -1,0 +1,7 @@
+Properties properties = new Properties()
+properties.load(project.rootProject.file("local.properties").newDataInputStream())
+
+def u = properties.getProperty("USER_NAME")
+def p = properties.getProperty("PWD")
+println("test username = $u")
+println("test password = $p")

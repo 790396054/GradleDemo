@@ -21,6 +21,7 @@ class RouterPlugin implements Plugin<Project> {
         project.clean.doFirst {
             // 删除 上一次构建生成的 router_mapping目录
             File routerMappingDir = new File(project.rootProject.projectDir, "router_mapping")
+            println ("routerMappingDir = ${routerMappingDir.absolutePath}")
             if (routerMappingDir.exists()) {
                 routerMappingDir.deleteDir()
             }

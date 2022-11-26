@@ -11,6 +11,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.GradleDemo"
         tools:targetApi="31">
+
+        <meta-data
+            android:name="MTA_CHANNEL"
+            android:value="${MTA_CHANNEL_VALUE}" />
+
         <activity
             android:name=".MainActivity2"
             android:exported="false">

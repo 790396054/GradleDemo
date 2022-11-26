@@ -25,12 +25,58 @@ android {
         resConfigs "zh-rCN"
     }
 
-    buildTypes {
+    signingConfigs {
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            storeFile file("./sign.keystore")
+            storePassword "123456"
+            keyAlias "gmm"
+            keyPassword "123456"
         }
     }
+
+    buildTypes {
+        debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // 会编译生成 BuildConfig 中的一个变量。生成路径是 app/build/generated/source/buildConfig/debug/com/didi/gradledemo/BuildConfig.java
+            buildConfigField("String", "buildTime", "\"${System.currentTimeMillis()}\"")
+            // 会编译生成资源路径的一个变量，生成路径是 app/build/generated/res/resValues/debug/values/gradleResValues.xml
+            resValue("string", "greeting", "我是debug编译器的字符串")
+        }
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // 会编译生成 BuildConfig 中的一个变量。生成路径是 app/build/generated/source/buildConfig/debug/com/didi/gradledemo/BuildConfig.java
+            buildConfigField("String", "buildTime", "\"${System.currentTimeMillis()}\"")
+            // 会编译生成资源路径的一个变量，生成路径是 app/build/generated/res/resValues/debug/values/gradleResValues.xml
+            resValue("string", "greeting", "我是release编译器的字符串")
+        }
+    }
+
+
+    // 多渠道包构建配置
+    flavorDimensions "channel"
+    productFlavors{
+        baidu {
+            manifestPlaceholders = [
+                    MTA_CHANNEL_VALUE: "baidu"
+            ]
+        }
+
+        xiaomi {
+            manifestPlaceholders = [
+                    MTA_CHANNEL_VALUE: "xiaomi"
+            ]
+        }
+
+        wandoujia {
+            manifestPlaceholders = [
+                    MTA_CHANNEL_VALUE: "wandoujia"
+            ]
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -43,6 +89,15 @@ android {
 //    }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+
+    // 重命名 apk 名称
+    applicationVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (variant.buildType.name == "release") {
+                outputFileName = "app_${variant.productFlavors[0].name}_${defaultConfig.versionName}.apk"
+            }
+        }
     }
 }
 
@@ -66,10 +121,16 @@ dependencies {
 
 }
 
-Properties properties = new Properties()
-properties.load(project.rootProject.file("local.properties").newDataInputStream())
+//apply from : 'read_local_prop.gradle'
+// 另一种写法
+apply from : project.file('read_local_prop.gradle')
 
-def u = properties.getProperty("USER_NAME")
-def p = properties.getProperty("PWD")
-println("test username = $u")
-println("test password = $p")
+
+configurations.all {
+    resolutionStrategy.eachDependency{details->
+        String dependency = details.requested.toString()
+//        if (dependency.contains("com.google.android.material:material")) {
+//            throw new RuntimeException("不允许使用 ${dependency}")
+//        }
+    }
+}

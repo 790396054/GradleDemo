@@ -8,3 +8,4 @@ gradle.taskGraph.beforeTask { task ->
 //    println("[all-task - tostring] - ${task.description}")
     // 写到一个文件中，如何实现？
 }
+include ':mylibrary'
